@@ -2,7 +2,7 @@
 #include <cstdio>
 #include <opencv2/opencv.hpp>
 
-#include "interface.hpp"
+#include "interface.h"
 
 using namespace std;
 using namespace cv;
@@ -172,7 +172,7 @@ int run()
 	int v, u;
 	uint8_t value;
 	
-	dst = create_image(height, width, ch_num);
+	dst = image_create(height, width, ch_num);
 	_dst = (Mat *) dst->mat;
 
 	for(v = 0; v < hor_row; v++)

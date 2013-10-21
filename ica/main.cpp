@@ -2,7 +2,7 @@
 #include <cstdio>
 #include <opencv2/opencv.hpp>
 
-#include "interface.hpp"
+#include "interface.h"
 
 using namespace std;
 using namespace cv;
@@ -102,7 +102,7 @@ int run()
 	double teta;
 	double x[SIZE], y[SIZE];
 
-	dst = create_image(src->height, src->width, 1);
+	dst = image_create(src->height, src->width, 1);
 
     const Mat * src_mat = (Mat *) src->mat;
 	Mat * dst_mat = (Mat *) dst->mat;

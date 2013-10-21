@@ -5,6 +5,8 @@
 
 \brief Интерфейс сторонних модулей - реализаций алгоритмов
 
+Заголовочный файл совместим со стандартами C90 и C++03.
+
 В пользовательских модулях необходимо реализовать следующие функции:
 
 - init();
@@ -17,32 +19,51 @@
 
 Следующие функции являются служебными и предоставляются стендом для пользовательских модулей:
 
-- create_image();
-- delete_image().
+- image_create();
+- image_delete();
+- matrix_create();
+- matrix_delete();
+- matrix_copy();
+- matrix_load_image();
+- matrix_save_image();
+- matrix_get_value();
+- matrix_set_value();
+- matrix_height();
+- matrix_width();
+- matrix_number_of_channel();
+- matrix_element_type().
+
+Модуль <B>должен</B> выделять в функции init() и самостоятельно очищать в функции destroy() память под свои возвращаемые значения. Память под свои параметры модуль может самостоятельно выделять, а может и не выделять. В том случае, если модуль не выделяет память под свои параметры, он <B>ни коим образом не должен</B> управлять памятью, выделенной под его параметры.
 
 */
 
 #ifndef INTERFACE_HPP
 #define INTERFACE_HPP
 
+#ifdef __cplusplus
 extern "C"
 {
-	/*! \brief Типы входных и выходных параметров алгоритма */
-	enum e_type
+#endif
+
+	/* ############################################################################ */
+	/* Типы данных входных и выходных параметров алгоритма */
+
+	/*! \brief Типы элементов матриц */
+	enum e_matrix_element_type
 	{
-		/*! Целое (int) */
-		INT_TYPE = 0,
+		/*! Целое, 8-ми битное, беззнаковое (uint8_t) */
+		UNSIGNED_INT_8_BIT_ELEMENT = 0,
 
 		/*! Вещественное двойной точности (double) */
-		DOUBLE_TYPE = 1,
-
-		/*! Изображение (s_image *) */
-		IMAGE_TYPE = 2
+		DOUBLE_ELEMENT = 1
 	};
+
+	/*! \brief Описатель матрицы */
+	typedef void * matrix;
 
 	/*!
 	
-	\brief Описатель изображения
+	\brief Структура данных, описывающая изображения
 
 	Изображение может иметь произвольное количество каналов.
 
@@ -60,24 +81,38 @@ extern "C"
 		/*! Количество спектральных каналов */
 		unsigned ch_num;
 
-		/*! Массив пикселей */
-		uint8_t * data;
-
-		/*! Указатель на OpenCV Mat */
-		void * mat;
-
-		// TODO Указатель на OpenCV IplImage
-
-		/*! \cond HIDDEN_SYMBOLS */
-
-			void * _img; // Указатель на CImage
-
-		/*! \endcond */
+		/*! Матрица пикселей */
+		matrix mat;
 	};
 
-	// ############################################################################
-	// Служебные функции
-	
+	/*! \brief Описатель изображения */
+	typedef s_image * image;
+
+	/*! \brief Типы входных и выходных параметров алгоритма */
+	enum e_type
+	{
+		/*! Целое со знаком (int) */
+		INT_TYPE = 0,
+
+		/*! Вещественное двойной точности (double) */
+		DOUBLE_TYPE = 1,
+
+		/*! Строка (char *) */
+		STRING_TYPE = 2,
+
+		/*! Булев тип (int) */
+		BOOLEAN_TYPE = 3,
+
+		/*! Матрица (matrix) */
+		MATRIX_TYPE = 4,
+
+		/*! Изображение (image) */
+		IMAGE_TYPE = 5
+	};
+
+	/* ############################################################################ */
+	/* Служебные функции - изображения */
+
 	/*!
 
 	\brief Создание изображения
@@ -90,7 +125,7 @@ extern "C"
 	\return NULL - в случае, если создать изображение не удалось.
 
 	*/
-	s_image * create_image(const unsigned height, const unsigned width, const unsigned ch_num);
+	image image_create(const unsigned height, const unsigned width, const unsigned ch_num);
 
 	/*!
 	
@@ -101,10 +136,46 @@ extern "C"
 	\return 0 - в случае успешного завершения операции;
 	\return <> 0 - в случае неудачного завершения операции.
 	*/
-	int delete_image(const s_image * img);
+	int image_delete(const image img);
 
-	// ############################################################################ 
-	// Интерфейс модуля
+	/* ############################################################################  */
+	/* Служебные функции - матрицы */
+	
+	/* TODO */
+	matrix matrix_create(const unsigned height, const unsigned width, const unsigned ch_num, const enum e_matrix_element_type element_type);
+
+	/* TODO */
+	int matrix_delete(matrix mtx);
+
+	/* TODO */
+	matrix matrix_copy(matrix mtx);
+
+	/* TODO */
+	matrix matrix_load_image(const char * fname);
+
+	/* TODO */
+	int matrix_save_image(matrix mtx, const char * fname);
+
+	/* TODO */
+	int matrix_get_value(matrix mtx, const unsigned row, const unsigned column, const unsigned channel, void * value);
+
+	/* TODO */
+	int matrix_set_value(matrix mtx, const unsigned row, const unsigned column, const unsigned channel, const void * value);
+
+	/* TODO */
+	int matrix_height(matrix mtx, unsigned * value);
+
+	/* TODO */
+	int matrix_width(matrix mtx, unsigned * value);
+
+	/* TODO */
+	int matrix_number_of_channel(matrix mtx, unsigned * value);
+
+	/* TODO */
+	int matrix_element_type(matrix mtx, enum e_matrix_element_type * value);
+
+	/* ############################################################################  */
+	/* Интерфейс модуля */
 
 	/*!
 
@@ -141,8 +212,8 @@ extern "C"
 	*/
 	int run();
 
-	// ############################################################################ 
-	// Параметры и возвращаемые значения алгоритма
+	/* ############################################################################  */
+	/* Параметры и возвращаемые значения алгоритма */
 
 	/*!
 
@@ -171,7 +242,7 @@ extern "C"
 	\return <> 0 - в случае неудачного завершения операции.
 
 	*/
-	int get_type(const bool is_param, const unsigned ind, e_type * type);
+	int get_type(const bool is_param, const unsigned ind, enum e_type * type);
 
 	/*!
 
@@ -200,7 +271,10 @@ extern "C"
 
 	*/
 	int set_value(const bool is_param, const unsigned ind, const void * value);
+
+#ifdef __cplusplus
 }
+#endif
 
 #endif
 
