@@ -23,7 +23,7 @@ int init(char * module_name, const unsigned module_name_len, unsigned * param_nu
 	src_thr = NULL;
 	dst = NULL;
 
-	strncpy(module_name, "simple", module_name_len);
+	strncpy(module_name, "demo_image", module_name_len);
 	module_name[module_name_len - 1] = '\0';
 
 	* param_num = 3;

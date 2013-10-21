@@ -1,7 +1,7 @@
 
 cmake_minimum_required(VERSION 2.8)
 
-project(simple)
+project(demo_matrix)
 
 find_package(OpenCV REQUIRED)
 
@@ -11,6 +11,6 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
 ############################################################################ 
 
 set(sources main.cpp)
-add_library(simple SHARED ${sources})
-target_link_libraries(simple ${OpenCV_LIBS})
+add_library(demo_matrix SHARED ${sources})
+target_link_libraries(demo_matrix ${OpenCV_LIBS})
 
