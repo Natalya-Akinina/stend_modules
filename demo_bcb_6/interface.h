@@ -40,6 +40,18 @@
 #ifndef INTERFACE_HPP
 #define INTERFACE_HPP
 
+#ifndef EXPORT_VARIABLE
+
+	#define EXPORT_VARIABLE
+
+#endif
+
+#ifndef EXPORT_FUNCTION
+
+	#define EXPORT_FUNCTION
+
+#endif
+
 #ifdef __cplusplus
 extern "C"
 {
@@ -110,6 +122,8 @@ extern "C"
 		IMAGE_TYPE = 5
 	};
 
+#ifdef SHARED_OBJECT
+
 	/* ############################################################################ */
 	/* Служебные функции - изображения */
 
@@ -125,7 +139,7 @@ extern "C"
 	\return NULL - в случае, если создать изображение не удалось.
 
 	*/
-	image image_create(const unsigned height, const unsigned width, const unsigned ch_num);
+	EXPORT_VARIABLE image (* image_create)(const unsigned height, const unsigned width, const unsigned ch_num);
 
 	/*!
 	
@@ -136,43 +150,45 @@ extern "C"
 	\return 0 - в случае успешного завершения операции;
 	\return <> 0 - в случае неудачного завершения операции.
 	*/
-	int image_delete(const image img);
+	EXPORT_VARIABLE int (* image_delete)(const image img);
 
 	/* ############################################################################  */
 	/* Служебные функции - матрицы */
 	
 	/* TODO */
-	matrix matrix_create(const unsigned height, const unsigned width, const unsigned ch_num, const enum e_matrix_element_type element_type);
+	EXPORT_VARIABLE matrix (* matrix_create)(const unsigned height, const unsigned width, const unsigned ch_num, const enum e_matrix_element_type element_type);
 
 	/* TODO */
-	int matrix_delete(matrix mtx);
+	EXPORT_VARIABLE int (* matrix_delete)(matrix mtx);
 
 	/* TODO */
-	matrix matrix_copy(matrix mtx);
+	EXPORT_VARIABLE matrix (* matrix_copy)(matrix mtx);
 
 	/* TODO */
-	matrix matrix_load_image(const char * fname);
+	EXPORT_VARIABLE matrix (* matrix_load_image)(const char * fname);
 
 	/* TODO */
-	int matrix_save_image(matrix mtx, const char * fname);
+	EXPORT_VARIABLE int (* matrix_save_image)(matrix mtx, const char * fname);
 
 	/* TODO */
-	int matrix_get_value(matrix mtx, const unsigned row, const unsigned column, const unsigned channel, void * value);
+	EXPORT_VARIABLE int (* matrix_get_value)(matrix mtx, const unsigned row, const unsigned column, const unsigned channel, void * value);
 
 	/* TODO */
-	int matrix_set_value(matrix mtx, const unsigned row, const unsigned column, const unsigned channel, const void * value);
+	EXPORT_VARIABLE int (* matrix_set_value)(matrix mtx, const unsigned row, const unsigned column, const unsigned channel, const void * value);
 
 	/* TODO */
-	int matrix_height(matrix mtx, unsigned * value);
+	EXPORT_VARIABLE int (* matrix_height)(matrix mtx, unsigned * value);
 
 	/* TODO */
-	int matrix_width(matrix mtx, unsigned * value);
+	EXPORT_VARIABLE int (* matrix_width)(matrix mtx, unsigned * value);
 
 	/* TODO */
-	int matrix_number_of_channel(matrix mtx, unsigned * value);
+	EXPORT_VARIABLE int (* matrix_number_of_channel)(matrix mtx, unsigned * value);
 
 	/* TODO */
-	int matrix_element_type(matrix mtx, enum e_matrix_element_type * value);
+	EXPORT_VARIABLE int (* matrix_element_type)(matrix mtx, enum e_matrix_element_type * value);
+
+#endif
 
 	/* ############################################################################  */
 	/* Интерфейс модуля */
@@ -190,7 +206,7 @@ extern "C"
 	\return <> 0 - в случае неудачного завершения операции.
 
 	*/
-	int init(char * module_name, const unsigned module_name_len, unsigned * param_num, unsigned * return_value_num);
+	int EXPORT_FUNCTION init(char * module_name, const unsigned module_name_len, unsigned * param_num, unsigned * return_value_num);
 
 	/*!
 
@@ -200,7 +216,7 @@ extern "C"
 	\return <> 0 - в случае неудачного завершения операции.
 
 	*/
-	int destroy();
+	int EXPORT_FUNCTION destroy();
 
 	/*!
 
@@ -210,7 +226,7 @@ extern "C"
 	\return <> 0 - в случае неудачного завершения операции.
 
 	*/
-	int run();
+	int EXPORT_FUNCTION run();
 
 	/* ############################################################################  */
 	/* Параметры и возвращаемые значения алгоритма */
@@ -228,7 +244,7 @@ extern "C"
 	\return <> 0 - в случае неудачного завершения операции.
 
 	*/
-	int get_name(const bool is_param, const unsigned ind, char * name, const unsigned name_len);
+	int EXPORT_FUNCTION get_name(const bool is_param, const unsigned ind, char * name, const unsigned name_len);
 
 	/*!
 
@@ -242,7 +258,7 @@ extern "C"
 	\return <> 0 - в случае неудачного завершения операции.
 
 	*/
-	int get_type(const bool is_param, const unsigned ind, enum e_type * type);
+	int EXPORT_FUNCTION get_type(const bool is_param, const unsigned ind, int * type);
 
 	/*!
 
@@ -256,7 +272,7 @@ extern "C"
 	\return <> 0 - в случае неудачного завершения операции.
 
 	*/
-	int get_value(const bool is_param, const unsigned ind, void * value);
+	int EXPORT_FUNCTION get_value(const bool is_param, const unsigned ind, void * value);
 
 	/*!
 
@@ -270,7 +286,7 @@ extern "C"
 	\return <> 0 - в случае неудачного завершения операции.
 
 	*/
-	int set_value(const bool is_param, const unsigned ind, const void * value);
+	int EXPORT_FUNCTION set_value(const bool is_param, const unsigned ind, const void * value);
 
 #ifdef __cplusplus
 }
