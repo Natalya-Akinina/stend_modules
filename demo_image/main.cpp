@@ -1,13 +1,15 @@
 
-#include <cstdio>
-#include <opencv2/opencv.hpp>
+#define SHARED_OBJECT
 
-#include "interface.hpp"
+#include <cstdio>
+#include <cstring>
+#include <cstdint>
+
+#include "interface.h"
 
 using namespace std;
-using namespace cv;
 
-s_image * src, * src_thr, * dst;
+image src, src_thr, dst;
 int hor_row = 100;
 
 bool is_correct_index(const bool is_param, const unsigned ind)
@@ -17,13 +19,13 @@ bool is_correct_index(const bool is_param, const unsigned ind)
 
 // ############################################################################ 
 
-int init(char * module_name, const unsigned module_name_len, unsigned * param_num, unsigned * return_value_num)
+int EXPORT_FUNCTION init(char * module_name, const unsigned module_name_len, unsigned * param_num, unsigned * return_value_num)
 {
 	src = NULL;
 	src_thr = NULL;
 	dst = NULL;
 
-	strncpy(module_name, "simple", module_name_len);
+	strncpy(module_name, "demo_image", module_name_len);
 	module_name[module_name_len - 1] = '\0';
 
 	* param_num = 3;
@@ -32,14 +34,14 @@ int init(char * module_name, const unsigned module_name_len, unsigned * param_nu
 	return 0;
 }
 
-int destroy()
+int EXPORT_FUNCTION destroy()
 {
 	return 0;
 }
 
 // ############################################################################ 
 
-int get_name(const bool is_param, const unsigned ind, char * name, const unsigned name_len)
+int EXPORT_FUNCTION get_name(const bool is_param, const unsigned ind, char * name, const unsigned name_len)
 {
 	if(! is_correct_index(is_param, ind))
 		return -1;
@@ -69,7 +71,7 @@ int get_name(const bool is_param, const unsigned ind, char * name, const unsigne
 	return 0;
 }
 
-int get_type(const bool is_param, const unsigned ind, e_type * type)
+int EXPORT_FUNCTION get_type(const bool is_param, const unsigned ind, int * type)
 {
 	if(! is_correct_index(is_param, ind))
 		return -1;
@@ -99,7 +101,7 @@ int get_type(const bool is_param, const unsigned ind, e_type * type)
 	return 0;
 }
 
-int get_value(const bool is_param, const unsigned ind, void * value)
+int EXPORT_FUNCTION get_value(const bool is_param, const unsigned ind, void * value)
 {
 	if(! is_correct_index(is_param, ind))
 		return -1;
@@ -129,7 +131,7 @@ int get_value(const bool is_param, const unsigned ind, void * value)
 	return 0;
 }
 
-int set_value(const bool is_param, const unsigned ind, const void * value)
+int EXPORT_FUNCTION set_value(const bool is_param, const unsigned ind, const void * value)
 {
 	if(! is_correct_index(is_param, ind))
 		return -1;
@@ -164,27 +166,29 @@ int set_value(const bool is_param, const unsigned ind, const void * value)
 
 // ############################################################################ 
 
-int run()
+int EXPORT_FUNCTION run()
 {
-	const Mat * _src = (Mat *) src->mat, * _src_thr = (Mat *) src_thr->mat;
-	Mat * _dst;
-	const int height = _src->rows, width = _src->cols, ch_num = _src->channels();
-	int v, u;
 	uint8_t value;
+	int v, u, t;
+	const int height = src->height, width = src->width, ch_num = src->ch_num;
 	
-	dst = create_image(height, width, ch_num);
-	_dst = (Mat *) dst->mat;
+	dst = image_create(height, width, ch_num);
 
 	for(v = 0; v < hor_row; v++)
 		for(u = 0; u < width; u++)
-			_dst->at<Vec3b>(v, u) = _src->at<Vec3b>(v, u);
+			for(t = 0; t < 3; t++)
+			{
+				matrix_get_value(src->mat, v, u, t, & value);
+				matrix_set_value(dst->mat, v, u, t, & value);
+			}
 
 	for(; v < height; v++)
 		for(u = 0; u < width; u++)
-		{
-			value = _src_thr->at<uint8_t>(v, u);
-			_dst->at<Vec3b>(v, u) = Vec3b(value, value, value);
-		}
+			for(t = 0; t < 3; t++)
+			{
+				matrix_get_value(src_thr->mat, v, u, t, & value);
+				matrix_set_value(dst->mat, v, u, t, & value);
+			}
 
 	return 0;
 }

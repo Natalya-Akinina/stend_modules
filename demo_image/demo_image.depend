@@ -4,6 +4,8 @@
 	<opencv2/opencv.hpp>
 	"interface.hpp"
 
+1380616861 .hpp"
+
 1364601357 c:\documents and settings\amv\Рабочий стол\Стенд\super_stend\windows\include\opencv2\opencv.hpp
 	"opencv2/core/core_c.h"
 	"opencv2/core/core.hpp"
@@ -20,8 +22,12 @@
 	"opencv2/highgui/highgui.hpp"
 	"opencv2/contrib/contrib.hpp"
 
+1364601357 ontrib/contrib.hpp"
+
 1364601357 c:\documents and settings\amv\Рабочий стол\Стенд\super_stend\windows\include\opencv2\core\core_c.h
 	"opencv2/core/types_c.h"
+
+1364601357 ore/types_c.h"
 
 1365116152 c:\documents and settings\amv\Рабочий стол\Стенд\super_stend\windows\include\opencv2\core\types_c.h
 	<assert.h>
@@ -37,6 +43,8 @@
 	<ipl/ipl.h>
 	"tegra_round.hpp"
 	"emmintrin.h"
+
+1365116152 .h"
 
 1364990751 c:\documents and settings\amv\Рабочий стол\Стенд\super_stend\windows\include\opencv2\core\core.hpp
 	"opencv2/core/types_c.h"
@@ -54,6 +62,8 @@
 	"opencv2/core/operations.hpp"
 	"opencv2/core/mat.hpp"
 
+1364990751 ore/mat.hpp"
+
 1365116152 c:\documents and settings\amv\Рабочий стол\Стенд\super_stend\windows\include\opencv2\core\version.hpp
 
 1364601357 c:\documents and settings\amv\Рабочий стол\Стенд\super_stend\windows\include\opencv2\core\operations.hpp
@@ -63,13 +73,19 @@
 	<bits/atomicity.h>
 	<limits>
 
+1364601357 
+
 1364990751 c:\documents and settings\amv\Рабочий стол\Стенд\super_stend\windows\include\opencv2\core\mat.hpp
 	<limits.h>
 	<string.h>
 
+1364601357 
+
 1364601357 c:\documents and settings\amv\Рабочий стол\Стенд\super_stend\windows\include\opencv2\flann\miniflann.hpp
 	"opencv2/core/core.hpp"
 	"opencv2/flann/defines.h"
+
+1364601357 lann/defines.h"
 
 1359332273 c:\documents and settings\amv\Рабочий стол\Стенд\super_stend\windows\include\opencv2\flann\defines.h
 	"config.h"
@@ -80,8 +96,12 @@
 	"opencv2/core/core_c.h"
 	"opencv2/imgproc/types_c.h"
 
+1364601358 mgproc/types_c.h"
+
 1364601358 c:\documents and settings\amv\Рабочий стол\Стенд\super_stend\windows\include\opencv2\imgproc\types_c.h
 	"opencv2/core/core_c.h"
+
+1364990751 ore/core_c.h"
 
 1364601358 c:\documents and settings\amv\Рабочий стол\Стенд\super_stend\windows\include\opencv2\imgproc\imgproc.hpp
 	"opencv2/core/core.hpp"
@@ -92,6 +112,8 @@
 	"opencv2/imgproc/imgproc.hpp"
 	"opencv2/photo/photo_c.h"
 
+1364601359 hoto/photo_c.h"
+
 1359332283 c:\documents and settings\amv\Рабочий стол\Стенд\super_stend\windows\include\opencv2\photo\photo_c.h
 	"opencv2/core/core_c.h"
 
@@ -99,13 +121,19 @@
 	"opencv2/video/tracking.hpp"
 	"opencv2/video/background_segm.hpp"
 
+1364601360 ideo/background_segm.hpp"
+
 1364601360 c:\documents and settings\amv\Рабочий стол\Стенд\super_stend\windows\include\opencv2\video\tracking.hpp
 	"opencv2/core/core.hpp"
 	"opencv2/imgproc/imgproc.hpp"
 
+1364601360 mgproc/imgproc.hpp"
+
 1364601360 c:\documents and settings\amv\Рабочий стол\Стенд\super_stend\windows\include\opencv2\video\background_segm.hpp
 	"opencv2/core/core.hpp"
 	<list>
+
+1364601359 ore/core.hpp"
 
 1364601357 c:\documents and settings\amv\Рабочий стол\Стенд\super_stend\windows\include\opencv2\features2d\features2d.hpp
 	"opencv2/core/core.hpp"
@@ -121,6 +149,8 @@
 	"opencv2/core/core.hpp"
 	"opencv2/features2d/features2d.hpp"
 
+1364601357 eatures2d/features2d.hpp"
+
 1364601359 c:\documents and settings\amv\Рабочий стол\Стенд\super_stend\windows\include\opencv2\ml\ml.hpp
 	"opencv2/core/core.hpp"
 	<limits.h>
@@ -135,6 +165,8 @@
 	"opencv2/core/core.hpp"
 	"opencv2/highgui/highgui_c.h"
 
+1364601358 ighgui/highgui_c.h"
+
 1364943360 c:\documents and settings\amv\Рабочий стол\Стенд\super_stend\windows\include\opencv2\contrib\contrib.hpp
 	"opencv2/core/core.hpp"
 	"opencv2/imgproc/imgproc.hpp"
@@ -142,6 +174,8 @@
 	"opencv2/objdetect/objdetect.hpp"
 	"opencv2/contrib/retina.hpp"
 	"opencv2/contrib/openfabmap.hpp"
+
+1364943360 ontrib/openfabmap.hpp"
 
 1364601357 c:\documents and settings\amv\Рабочий стол\Стенд\super_stend\windows\include\opencv2\contrib\retina.hpp
 	"opencv2/core/core.hpp"
@@ -157,4 +191,11 @@
 	<valarray>
 
 1379579078 c:\documents and settings\amv\Рабочий стол\Стенд\super_stend\src\modules\simple\interface.hpp
+
+1382369061 source:/home/amv/main/disser/project/super_stend/src/modules/demo_image/main.cpp
+	<cstdio>
+	<opencv2/opencv.hpp>
+	"interface.h"
+
+1382369061 /home/amv/main/disser/project/super_stend/src/modules/demo_image/interface.h
 
