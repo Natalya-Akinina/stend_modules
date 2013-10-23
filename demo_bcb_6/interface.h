@@ -42,12 +42,20 @@
 
 #ifndef EXPORT_VARIABLE
 
+	/*! \brief Константа компилятора, отмечающая переменные, экспортируемые из модуля
+	 *
+	 * Устанавливается в зависимости от используемого компилятора
+	 */
 	#define EXPORT_VARIABLE
 
 #endif
 
 #ifndef EXPORT_FUNCTION
 
+	/*! \brief Константа компилятора, отмечающая функции, экспортируемые из модуля
+	 *
+	 * Устанавливается в зависимости от используемого компилятора
+	 */
 	#define EXPORT_FUNCTION
 
 #endif
@@ -57,20 +65,21 @@ extern "C"
 {
 #endif
 
-	/* ############################################################################ */
-	/* Типы данных входных и выходных параметров алгоритма */
+	// ############################################################################ 
+	//@{
 
-	/*! \brief Типы элементов матриц */
-	enum e_matrix_element_type
-	{
-		/*! Целое, 8-ми битное, беззнаковое (uint8_t) */
-		UNSIGNED_INT_8_BIT_ELEMENT = 0,
+	/// @name Типы элементов матриц
+	
+	//! \brief Целое, 8-ми битное, беззнаковое (uint8_t)
+	#define UNSIGNED_INT_8_BIT_ELEMENT 0
 
-		/*! Вещественное двойной точности (double) */
-		DOUBLE_ELEMENT = 1
-	};
+	//! \brief Вещественное двойной точности (double)
+	#define DOUBLE_ELEMENT 1
 
-	/*! \brief Описатель матрицы */
+	//@}
+	// ############################################################################ 
+
+	//! \brief Описатель матрицы
 	typedef void * matrix;
 
 	/*!
@@ -84,43 +93,47 @@ extern "C"
 	*/
 	struct s_image
 	{
-		/*! Количество строк пикселей */
+		//! Количество строк пикселей
 		unsigned height;
 
-		/*! Количество столбцов пикселей */
+		//! Количество столбцов пикселей
 		unsigned width;
 
-		/*! Количество спектральных каналов */
+		//! Количество спектральных каналов
 		unsigned ch_num;
 
-		/*! Матрица пикселей */
+		//! Матрица пикселей
 		matrix mat;
 	};
 
-	/*! \brief Описатель изображения */
+	//! \brief Описатель изображения
 	typedef s_image * image;
 
-	/*! \brief Типы входных и выходных параметров алгоритма */
-	enum e_type
-	{
-		/*! Целое со знаком (int) */
-		INT_TYPE = 0,
+	// ############################################################################ 
+	//@{
 
-		/*! Вещественное двойной точности (double) */
-		DOUBLE_TYPE = 1,
+	/// @name Типы входных и выходных параметров алгоритма
+	
+	//! \brief Целое со знаком (int)
+	#define INT_TYPE 0
+	
+	//! \brief Вещественное двойной точности (double)
+	#define DOUBLE_TYPE 1
 
-		/*! Строка (char *) */
-		STRING_TYPE = 2,
+	//! \brief Строка (char *)
+	#define STRING_TYPE 2
 
-		/*! Булев тип (int) */
-		BOOLEAN_TYPE = 3,
+	//! \brief Булев тип (int)
+	#define BOOLEAN_TYPE 3
 
-		/*! Матрица (matrix) */
-		MATRIX_TYPE = 4,
+	//! \brief Матрица (matrix)
+	#define MATRIX_TYPE 4
 
-		/*! Изображение (image) */
-		IMAGE_TYPE = 5
-	};
+	//! \brief Изображение (image)
+	#define IMAGE_TYPE 5
+
+	//@}
+	// ############################################################################ 
 
 #ifdef SHARED_OBJECT
 
@@ -156,7 +169,7 @@ extern "C"
 	/* Служебные функции - матрицы */
 	
 	/* TODO */
-	EXPORT_VARIABLE matrix (* matrix_create)(const unsigned height, const unsigned width, const unsigned ch_num, const enum e_matrix_element_type element_type);
+	EXPORT_VARIABLE matrix (* matrix_create)(const unsigned height, const unsigned width, const unsigned ch_num, const int element_type);
 
 	/* TODO */
 	EXPORT_VARIABLE int (* matrix_delete)(matrix mtx);
@@ -186,7 +199,10 @@ extern "C"
 	EXPORT_VARIABLE int (* matrix_number_of_channel)(matrix mtx, unsigned * value);
 
 	/* TODO */
-	EXPORT_VARIABLE int (* matrix_element_type)(matrix mtx, enum e_matrix_element_type * value);
+	EXPORT_VARIABLE int (* matrix_element_type)(matrix mtx, int * value);
+
+	/* TODO */
+	EXPORT_VARIABLE int (* matrix_pointer_to_data)(matrix mtx, void ** ptr);
 
 #endif
 

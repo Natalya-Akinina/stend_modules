@@ -2,12 +2,12 @@
 #define SHARED_OBJECT
 
 #include <cstdio>
-#include <opencv2/opencv.hpp>
+#include <cstring>
+#include <cstdint>
 
 #include "interface.h"
 
 using namespace std;
-using namespace cv;
 
 image src, src_thr, dst;
 int hor_row = 100;
@@ -168,25 +168,27 @@ int EXPORT_FUNCTION set_value(const bool is_param, const unsigned ind, const voi
 
 int EXPORT_FUNCTION run()
 {
-	const Mat * _src = (Mat *) src->mat, * _src_thr = (Mat *) src_thr->mat;
-	Mat * _dst;
-	const int height = _src->rows, width = _src->cols, ch_num = _src->channels();
-	int v, u;
 	uint8_t value;
+	int v, u, t;
+	const int height = src->height, width = src->width, ch_num = src->ch_num;
 	
 	dst = image_create(height, width, ch_num);
-	_dst = (Mat *) dst->mat;
 
 	for(v = 0; v < hor_row; v++)
 		for(u = 0; u < width; u++)
-			_dst->at<Vec3b>(v, u) = _src->at<Vec3b>(v, u);
+			for(t = 0; t < 3; t++)
+			{
+				matrix_get_value(src->mat, v, u, t, & value);
+				matrix_set_value(dst->mat, v, u, t, & value);
+			}
 
 	for(; v < height; v++)
 		for(u = 0; u < width; u++)
-		{
-			value = _src_thr->at<uint8_t>(v, u);
-			_dst->at<Vec3b>(v, u) = Vec3b(value, value, value);
-		}
+			for(t = 0; t < 3; t++)
+			{
+				matrix_get_value(src_thr->mat, v, u, t, & value);
+				matrix_set_value(dst->mat, v, u, t, & value);
+			}
 
 	return 0;
 }
