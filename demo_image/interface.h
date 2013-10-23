@@ -31,7 +31,8 @@
 - matrix_height();
 - matrix_width();
 - matrix_number_of_channel();
-- matrix_element_type().
+- matrix_element_type();
+- matrix_pointer_to_data().
 
 Модуль <B>должен</B> выделять в функции init() и самостоятельно очищать в функции destroy() память под свои возвращаемые значения. Память под свои параметры модуль может самостоятельно выделять, а может и не выделять. В том случае, если модуль не выделяет память под свои параметры, он <B>ни коим образом не должен</B> управлять памятью, выделенной под его параметры.
 
@@ -44,7 +45,7 @@
 
 	/*! \brief Константа компилятора, отмечающая переменные, экспортируемые из модуля
 	 *
-	 * Устанавливается в зависимости от используемого компилятора
+	 * Устанавливается до подключения файла в зависимости от используемого компилятора
 	 */
 	#define EXPORT_VARIABLE
 
@@ -54,7 +55,7 @@
 
 	/*! \brief Константа компилятора, отмечающая функции, экспортируемые из модуля
 	 *
-	 * Устанавливается в зависимости от используемого компилятора
+	 * Устанавливается до подключения файла в зависимости от используемого компилятора
 	 */
 	#define EXPORT_FUNCTION
 
@@ -68,7 +69,7 @@ extern "C"
 	// ############################################################################ 
 	//@{
 
-	/// @name Типы элементов матриц
+	//! \name Типы элементов матриц
 	
 	//! \brief Целое, 8-ми битное, беззнаковое (uint8_t)
 	#define UNSIGNED_INT_8_BIT_ELEMENT 0
@@ -112,7 +113,7 @@ extern "C"
 	// ############################################################################ 
 	//@{
 
-	/// @name Типы входных и выходных параметров алгоритма
+	//! \name Типы входных и выходных параметров алгоритма
 	
 	//! \brief Целое со знаком (int)
 	#define INT_TYPE 0
@@ -137,8 +138,32 @@ extern "C"
 
 #ifdef SHARED_OBJECT
 
-	/* ############################################################################ */
-	/* Служебные функции - изображения */
+	// ############################################################################
+	// Служебные функции - изображения
+
+	EXPORT_VARIABLE image (* image_create)(const unsigned height, const unsigned width, const unsigned ch_num);
+	EXPORT_VARIABLE int (* image_delete)(const image img);
+
+	// ############################################################################
+	// Служебные функции - матрицы
+	
+	EXPORT_VARIABLE matrix (* matrix_create)(const unsigned height, const unsigned width, const unsigned ch_num, const int element_type);
+	EXPORT_VARIABLE int (* matrix_delete)(matrix mtx);
+	EXPORT_VARIABLE matrix (* matrix_copy)(matrix mtx);
+	EXPORT_VARIABLE matrix (* matrix_load_image)(const char * fname);
+	EXPORT_VARIABLE int (* matrix_save_image)(matrix mtx, const char * fname);
+	EXPORT_VARIABLE int (* matrix_get_value)(matrix mtx, const unsigned row, const unsigned column, const unsigned channel, void * value);
+	EXPORT_VARIABLE int (* matrix_set_value)(matrix mtx, const unsigned row, const unsigned column, const unsigned channel, const void * value);
+	EXPORT_VARIABLE int (* matrix_height)(matrix mtx, unsigned * value);
+	EXPORT_VARIABLE int (* matrix_width)(matrix mtx, unsigned * value);
+	EXPORT_VARIABLE int (* matrix_number_of_channel)(matrix mtx, unsigned * value);
+	EXPORT_VARIABLE int (* matrix_element_type)(matrix mtx, int * value);
+	EXPORT_VARIABLE int (* matrix_pointer_to_data)(matrix mtx, void ** ptr);
+
+#else
+
+	// ############################################################################
+	// Служебные функции - изображения
 
 	/*!
 
@@ -152,7 +177,7 @@ extern "C"
 	\return NULL - в случае, если создать изображение не удалось.
 
 	*/
-	EXPORT_VARIABLE image (* image_create)(const unsigned height, const unsigned width, const unsigned ch_num);
+	image image_create(const unsigned height, const unsigned width, const unsigned ch_num);
 
 	/*!
 	
@@ -162,47 +187,187 @@ extern "C"
 
 	\return 0 - в случае успешного завершения операции;
 	\return <> 0 - в случае неудачного завершения операции.
+
 	*/
-	EXPORT_VARIABLE int (* image_delete)(const image img);
+	int image_delete(const image img);
 
-	/* ############################################################################  */
-	/* Служебные функции - матрицы */
+	// ############################################################################
+	// Служебные функции - матрицы
+
+	/*!
 	
-	/* TODO */
-	EXPORT_VARIABLE matrix (* matrix_create)(const unsigned height, const unsigned width, const unsigned ch_num, const int element_type);
+	\brief Создание матрицы
 
-	/* TODO */
-	EXPORT_VARIABLE int (* matrix_delete)(matrix mtx);
+	\param height - количество строк в матрице;
+	\param width - количество столбцов в матрице;
+	\param ch_num - количество каналов в матрице;
+	\param element_type - тип элемента матрицы.
 
-	/* TODO */
-	EXPORT_VARIABLE matrix (* matrix_copy)(matrix mtx);
+	\return описатель созданной матрицы - в случае ее успешного создания;
+	\return NULL - в случае, если матрицу создать не удалось.
 
-	/* TODO */
-	EXPORT_VARIABLE matrix (* matrix_load_image)(const char * fname);
+	\sa UNSIGNED_INT_8_BIT_ELEMENT, DOUBLE_ELEMENT
 
-	/* TODO */
-	EXPORT_VARIABLE int (* matrix_save_image)(matrix mtx, const char * fname);
+	*/
+	matrix matrix_create(const unsigned height, const unsigned width, const unsigned ch_num, const int element_type);
 
-	/* TODO */
-	EXPORT_VARIABLE int (* matrix_get_value)(matrix mtx, const unsigned row, const unsigned column, const unsigned channel, void * value);
+	/*!
+	
+	\brief Копирование матрицы
 
-	/* TODO */
-	EXPORT_VARIABLE int (* matrix_set_value)(matrix mtx, const unsigned row, const unsigned column, const unsigned channel, const void * value);
+	\param mtx - копируемая матрица.
 
-	/* TODO */
-	EXPORT_VARIABLE int (* matrix_height)(matrix mtx, unsigned * value);
+	\return описатель скопированной матрицы - в случае ее успешного копирования;
+	\return NULL - в случае, если матрицу скопировать не удалось.
 
-	/* TODO */
-	EXPORT_VARIABLE int (* matrix_width)(matrix mtx, unsigned * value);
+	*/
+	matrix matrix_copy(matrix mtx);
 
-	/* TODO */
-	EXPORT_VARIABLE int (* matrix_number_of_channel)(matrix mtx, unsigned * value);
+	/*!
+	
+	\brief Загрузка изображения
 
-	/* TODO */
-	EXPORT_VARIABLE int (* matrix_element_type)(matrix mtx, int * value);
+	\param fname - полный путь и имя файла с изображением.
 
-	/* TODO */
-	EXPORT_VARIABLE int (* matrix_pointer_to_data)(matrix mtx, void ** ptr);
+	\return указатель на созданную матрицу - в случае, если загрузка изображения прошла успешно;
+	\return NULL - в случае, если загрузить изображение не удалось.
+
+	*/
+	matrix matrix_load_image(const char * fname);
+
+	/*!
+	
+	\brief Сохранение изображения
+
+	\param mtx - описатель матрицы;
+	\param fname - полный путь и имя файла, в который будет сохранено изображение.
+
+	\return 0 - в случае успешного завершения операции;
+	\return <> 0 - в случае неудачного завершения операции.
+
+	*/
+	int matrix_save_image(matrix mtx, const char * fname);
+
+	/*!
+	
+	\brief Получение значения элемента матрицы
+
+	\param mtx - описатель матрицы;
+	\param row - номер строки;
+	\param column - номер стоблца;
+	\param channel - номер канала (нумерация от 0);
+	\param value - указатель на переменную, в которой будет сохранено получаемое значение.
+
+	В случае, если матрица не является изображением, то в качестве channel можно указывать 0 (индекс единственного канала матрицы).
+
+	Тип value должен совпадать с типом элемента матрицы.
+
+	\return 0 - в случае успешного завершения операции;
+	\return <> 0 - в случае неудачного завершения операции.
+
+	*/
+	int matrix_get_value(matrix mtx, const unsigned row, const unsigned column, const unsigned channel, void * value);
+
+	/*!
+	
+	\brief Установ значения элемента матрицы
+
+	\param mtx - описатель матрицы;
+	\param row - номер строки;
+	\param column - номер стоблца;
+	\param channel - номер канала (нумерация от 0);
+	\param value - указатель на переменную, хранящую устанавливаемое значение.
+
+	В случае, если матрица не является изображением, то в качестве channel можно указывать 0 (индекс единственного канала матрицы).
+
+	Тип value должен совпадать с типом элемента матрицы.
+
+	\return 0 - в случае успешного завершения операции;
+	\return <> 0 - в случае неудачного завершения операции.
+
+	*/
+	int matrix_set_value(matrix mtx, const unsigned row, const unsigned column, const unsigned channel, const void * value);
+
+	/*!
+	
+	\brief Получение количества строк в матрице
+
+	\param mtx - описатель матрицы;
+	\param value - указатель на переменную, в которой будет возвращено количество строк в матрице.
+
+	\return 0 - в случае успешного завершения операции;
+	\return <> 0 - в случае неудачного завершения операции.
+
+	*/
+	int matrix_height(matrix mtx, unsigned * value);
+
+	/*!
+	
+	\brief Получение количества столбцов в матрице
+
+	\param mtx - описатель матрицы;
+	\param value - указатель на переменную, в которой будет возвращено количество столбцов в матрице.
+
+	\return 0 - в случае успешного завершения операции;
+	\return <> 0 - в случае неудачного завершения операции.
+
+	*/
+	int matrix_width(matrix mtx, unsigned * value);
+
+	/*!
+	
+	\brief Получение количества спектральных каналов в матрице
+
+	\param mtx - описатель матрицы;
+	\param value - указатель на переменную, в которой будет возвращено количество каналов в матрице.
+
+	Данная функция используется в случае, если матрица хранит изображение.
+
+	\return 0 - в случае успешного завершения операции;
+	\return <> 0 - в случае неудачного завершения операции.
+
+	*/
+	int matrix_number_of_channel(matrix mtx, unsigned * value);
+
+	/*!
+	
+	\brief Определение типа элементов матрицы
+
+	\param mtx - описатель матрицы;
+	\param value - указатель на переменную, в которой будет возвращен код типа элемента матрицы.
+
+	\return 0 - в случае успешного завершения операции;
+	\return <> 0 - в случае неудачного завершения операции.
+
+	\sa UNSIGNED_INT_8_BIT_ELEMENT, DOUBLE_ELEMENT
+
+	*/
+	int matrix_element_type(matrix mtx, int * value);
+
+	/*!
+	
+	\brief Удаление матрицы
+
+	\param mtx - описатель матрицы.
+
+	\return 0 - в случае успешного завершения операции;
+	\return <> 0 - в случае неудачного завершения операции.
+
+	*/
+	int matrix_delete(matrix mtx);
+
+	/*!
+	
+	\brief Получение указателя на область памяти, в которой хранится содержимое матрицы
+
+	\param mtx - описатель матрицы;
+	\param ptr - указатель на указатель, в котором будет возвращен адрес области памяти, содержащей содержимое матрицы.
+
+	\return 0 - в случае успешного завершения операции;
+	\return <> 0 - в случае неудачного завершения операции.
+
+	*/
+	int matrix_pointer_to_data(matrix mtx, void ** ptr);
 
 #endif
 
