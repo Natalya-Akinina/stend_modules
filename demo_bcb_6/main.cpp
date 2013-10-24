@@ -7,7 +7,7 @@
 #include <cstdio>
 #include <cstring>
 
-#include "interface.h"
+#include "../interface.h"
 
 using namespace std;     
 

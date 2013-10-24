@@ -162,6 +162,12 @@ extern "C"
 
 #else
 
+	//! \cond HIDDEN_SYMBOLS
+
+	#define HIDDEN __attribute__ ((visibility ("hidden")))
+
+	//! \endcond
+
 	// ############################################################################
 	// Служебные функции - изображения
 
@@ -177,6 +183,7 @@ extern "C"
 	\return NULL - в случае, если создать изображение не удалось.
 
 	*/
+	/*! \cond HIDDEN_SYMBOLS */ HIDDEN /*! \endcond */
 	image image_create(const unsigned height, const unsigned width, const unsigned ch_num);
 
 	/*!
@@ -189,6 +196,7 @@ extern "C"
 	\return <> 0 - в случае неудачного завершения операции.
 
 	*/
+	/*! \cond HIDDEN_SYMBOLS */ HIDDEN /*! \endcond */
 	int image_delete(const image img);
 
 	// ############################################################################
@@ -209,6 +217,7 @@ extern "C"
 	\sa UNSIGNED_INT_8_BIT_ELEMENT, DOUBLE_ELEMENT
 
 	*/
+	/*! \cond HIDDEN_SYMBOLS */ HIDDEN /*! \endcond */
 	matrix matrix_create(const unsigned height, const unsigned width, const unsigned ch_num, const int element_type);
 
 	/*!
@@ -221,6 +230,7 @@ extern "C"
 	\return NULL - в случае, если матрицу скопировать не удалось.
 
 	*/
+	/*! \cond HIDDEN_SYMBOLS */ HIDDEN /*! \endcond */
 	matrix matrix_copy(matrix mtx);
 
 	/*!
@@ -233,6 +243,7 @@ extern "C"
 	\return NULL - в случае, если загрузить изображение не удалось.
 
 	*/
+	/*! \cond HIDDEN_SYMBOLS */ HIDDEN /*! \endcond */
 	matrix matrix_load_image(const char * fname);
 
 	/*!
@@ -246,6 +257,7 @@ extern "C"
 	\return <> 0 - в случае неудачного завершения операции.
 
 	*/
+	/*! \cond HIDDEN_SYMBOLS */ HIDDEN /*! \endcond */
 	int matrix_save_image(matrix mtx, const char * fname);
 
 	/*!
@@ -266,6 +278,7 @@ extern "C"
 	\return <> 0 - в случае неудачного завершения операции.
 
 	*/
+	/*! \cond HIDDEN_SYMBOLS */ HIDDEN /*! \endcond */
 	int matrix_get_value(matrix mtx, const unsigned row, const unsigned column, const unsigned channel, void * value);
 
 	/*!
@@ -286,6 +299,7 @@ extern "C"
 	\return <> 0 - в случае неудачного завершения операции.
 
 	*/
+	/*! \cond HIDDEN_SYMBOLS */ HIDDEN /*! \endcond */
 	int matrix_set_value(matrix mtx, const unsigned row, const unsigned column, const unsigned channel, const void * value);
 
 	/*!
@@ -299,6 +313,7 @@ extern "C"
 	\return <> 0 - в случае неудачного завершения операции.
 
 	*/
+	/*! \cond HIDDEN_SYMBOLS */ HIDDEN /*! \endcond */
 	int matrix_height(matrix mtx, unsigned * value);
 
 	/*!
@@ -312,6 +327,7 @@ extern "C"
 	\return <> 0 - в случае неудачного завершения операции.
 
 	*/
+	/*! \cond HIDDEN_SYMBOLS */ HIDDEN /*! \endcond */
 	int matrix_width(matrix mtx, unsigned * value);
 
 	/*!
@@ -327,6 +343,7 @@ extern "C"
 	\return <> 0 - в случае неудачного завершения операции.
 
 	*/
+	/*! \cond HIDDEN_SYMBOLS */ HIDDEN /*! \endcond */
 	int matrix_number_of_channel(matrix mtx, unsigned * value);
 
 	/*!
@@ -342,6 +359,7 @@ extern "C"
 	\sa UNSIGNED_INT_8_BIT_ELEMENT, DOUBLE_ELEMENT
 
 	*/
+	/*! \cond HIDDEN_SYMBOLS */ HIDDEN /*! \endcond */
 	int matrix_element_type(matrix mtx, int * value);
 
 	/*!
@@ -354,6 +372,7 @@ extern "C"
 	\return <> 0 - в случае неудачного завершения операции.
 
 	*/
+	/*! \cond HIDDEN_SYMBOLS */ HIDDEN /*! \endcond */
 	int matrix_delete(matrix mtx);
 
 	/*!
@@ -367,6 +386,7 @@ extern "C"
 	\return <> 0 - в случае неудачного завершения операции.
 
 	*/
+	/*! \cond HIDDEN_SYMBOLS */ HIDDEN /*! \endcond */
 	int matrix_pointer_to_data(matrix mtx, void ** ptr);
 
 #endif

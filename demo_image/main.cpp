@@ -5,7 +5,7 @@
 #include <cstring>
 #include <cstdint>
 
-#include "interface.h"
+#include "../interface.h"
 
 using namespace std;
 
