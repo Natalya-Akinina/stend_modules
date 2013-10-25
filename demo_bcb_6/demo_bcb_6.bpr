@@ -8,7 +8,7 @@
     <RESFILES value="demo_bcb_6.res"/>
     <IDLFILES value=""/>
     <IDLGENFILES value=""/>
-    <DEFFILE value="list.def"/>
+    <DEFFILE value=""/>
     <RESDEPEN value="$(RESFILES)"/>
     <LIBFILES value=""/>
     <LIBRARIES value=""/>
@@ -56,8 +56,6 @@
       <FILE FILENAME="demo_bcb_6.res" FORMNAME="" UNITNAME="demo_bcb_6.res" CONTAINERID="ResTool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="demo_bcb_6.bpf" FORMNAME="" UNITNAME="demo_bcb_6" CONTAINERID="BPF" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="main.cpp" FORMNAME="" UNITNAME="main" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="interface.h" FORMNAME="" UNITNAME="interface.h" CONTAINERID="" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="list.def" FORMNAME="" UNITNAME="list.def" CONTAINERID="DefTool" DESIGNCLASS="" LOCALCOMMAND=""/>
   </FILELIST>
   <BUILDTOOLS>
   </BUILDTOOLS>

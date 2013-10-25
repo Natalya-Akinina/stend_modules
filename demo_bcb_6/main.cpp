@@ -158,10 +158,10 @@ int EXPORT_FUNCTION run()
 {
         dst = image_create(src->height, src->width, src->ch_num);
 
-        printf("TODO %s\n", in);
+        printf("In module: %s\n", in);
 
         if(out == NULL)
-                out = strdup("TODO out string");
+                out = strdup("Output string");
 
 	return 0;
 }
