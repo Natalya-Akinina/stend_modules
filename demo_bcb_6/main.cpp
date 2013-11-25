@@ -4,12 +4,28 @@
 #define EXPORT_FUNCTION __declspec(dllexport) __cdecl
                 
 #include <windows.h>
+#include <vcl.h>
 #include <cstdio>
 #include <cstring>
 
 #include "../interface.h"
 
 using namespace std;     
+
+#define throw_ \
+{\
+	fprintf(stderr, "[Exception] File %s, Line %d\n", __FILE__, __LINE__);\
+	throw 1;\
+};
+
+#define throw_if(condition) \
+{\
+	if((condition))\
+		throw_;\
+}
+
+#define throw_null(pointer) \
+	throw_if((pointer) == NULL)
 
 #pragma argsused
 BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fwdreason, LPVOID lpvReserved)
@@ -25,22 +41,77 @@ bool is_correct_index(const bool is_param, const unsigned ind)
 	return ind < 2;
 }
 
-Graphics::TBitmap * matrix_to_TBitmap(const matrix * mtx)
+Graphics::TBitmap * matrix_to_TBitmap(matrix * mtx)
 {
 	Graphics::TBitmap * img = NULL;
 
 	try
 	{
-		unsigned height, width, ch_num;
+		unsigned height, width, ch_num, v, scale;
 		int elem_type;
 
 		throw_if(matrix_height(mtx, & height));
 		throw_if(matrix_width(mtx, & width));
 		throw_if(matrix_number_of_channel(mtx, & ch_num));
 		throw_if(matrix_element_type(mtx, & elem_type));
-		throw_null(img = new Graphics::TBitmap());
+		throw_null(img = new Graphics::TBitmap);
 
-		// TODO
+		img->Height = height;
+		img->Width = width;
+
+		switch(elem_type)
+		{
+			case UNSIGNED_INT_8_BIT_ELEMENT:
+			{
+				switch(ch_num)
+				{
+					case 1:
+					{
+						// TODO Отладить - точно не нужно заполнять палитру?
+						img->PixelFormat = pf8bit;
+						scale = 1;
+
+						break;
+					}
+					case 3:
+					{
+						img->PixelFormat = pf24bit;
+						scale = 3;
+
+						break;
+					}
+					default:
+					{
+						throw_;
+
+						break;
+					}
+				}
+
+				break;
+			}
+			case DOUBLE_ELEMENT:
+			{
+				throw_;
+
+				break;
+			}
+			default:
+			{
+				throw_;
+
+				break;
+			}
+		}
+
+		for(v = 0; v < height; v++)
+		{
+			void * ptr;
+			
+			throw_if(matrix_pointer_to_row(mtx, v, & ptr));
+			
+			memcpy(img->ScanLine[height - v - 1], ptr, width * scale);
+		}
 	}
 	catch(...)
 	{
@@ -59,10 +130,10 @@ matrix TBitmap_to_matrix(const Graphics::TBitmap * img)
 
 	try
 	{
-		const unsigned height, width, ch_num; // TODO
-		const int elem_type; // TODO
+      //		const unsigned height, width, ch_num; // TODO
+      //		const int elem_type; // TODO
 
-		throw_null(mtx = matrix_create(height, width, ch_num, elem_type));
+      //		throw_null(mtx = matrix_create(height, width, ch_num, elem_type));
 
 		// TODO
 	}
