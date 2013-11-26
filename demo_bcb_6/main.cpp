@@ -41,18 +41,19 @@ bool is_correct_index(const bool is_param, const unsigned ind)
 	return ind < 2;
 }
 
-Graphics::TBitmap * matrix_to_TBitmap(matrix * mtx)
+Graphics::TBitmap * matrix_to_TBitmap(matrix mtx)
 {
 	Graphics::TBitmap * img = NULL;
 
 	try
 	{
 		unsigned height, width, ch_num, v, scale;
-		int elem_type;
+		int elem_type;       
+                void * ptr;
 
 		throw_if(matrix_height(mtx, & height));
 		throw_if(matrix_width(mtx, & width));
-		throw_if(matrix_number_of_channel(mtx, & ch_num));
+		throw_if(matrix_number_of_channels(mtx, & ch_num));
 		throw_if(matrix_element_type(mtx, & elem_type));
 		throw_null(img = new Graphics::TBitmap);
 
@@ -67,9 +68,28 @@ Graphics::TBitmap * matrix_to_TBitmap(matrix * mtx)
 				{
 					case 1:
 					{
-						// TODO Отладить - точно не нужно заполнять палитру?
 						img->PixelFormat = pf8bit;
 						scale = 1;
+						
+						struct
+                        {
+							WORD palVersion;
+							WORD palNumEntries;
+							PALETTEENTRY palEntry[256];
+						} palette;
+
+						palette.palVersion = 0x300;
+						palette.palNumEntries = 256;
+
+						for(v = 0; v < 256; v++)
+						{
+							palette.palEntry[v].peRed = v;
+							palette.palEntry[v].peGreen = v;
+							palette.palEntry[v].peBlue = v;
+							palette.palEntry[v].peFlags = PC_NOCOLLAPSE;
+						}
+
+						img->Palette = CreatePalette((LOGPALETTE *)& palette);
 
 						break;
 					}
@@ -83,8 +103,6 @@ Graphics::TBitmap * matrix_to_TBitmap(matrix * mtx)
 					default:
 					{
 						throw_;
-
-						break;
 					}
 				}
 
@@ -93,24 +111,17 @@ Graphics::TBitmap * matrix_to_TBitmap(matrix * mtx)
 			case DOUBLE_ELEMENT:
 			{
 				throw_;
-
-				break;
 			}
 			default:
 			{
 				throw_;
-
-				break;
 			}
 		}
 
 		for(v = 0; v < height; v++)
 		{
-			void * ptr;
-			
 			throw_if(matrix_pointer_to_row(mtx, v, & ptr));
-			
-			memcpy(img->ScanLine[height - v - 1], ptr, width * scale);
+			memcpy(img->ScanLine[v], ptr, width * scale);
 		}
 	}
 	catch(...)
@@ -124,28 +135,84 @@ Graphics::TBitmap * matrix_to_TBitmap(matrix * mtx)
 	return img;
 }
 
-matrix TBitmap_to_matrix(const Graphics::TBitmap * img)
+image TBitmap_to_image(const Graphics::TBitmap * img)
 {
-	matrix mtx = NULL;
+	image __img = NULL;
 
 	try
 	{
-      //		const unsigned height, width, ch_num; // TODO
-      //		const int elem_type; // TODO
+		const unsigned height = img->Height, width = img->Width;
+		unsigned v, u, u_3, u_4;
+		unsigned char * ptr, * line;
 
-      //		throw_null(mtx = matrix_create(height, width, ch_num, elem_type));
+		switch(img->PixelFormat)
+		{
+			case pf8bit:
+			{
+				PALETTEENTRY palette[256], color;
 
-		// TODO
+				__img = image_create(height, width, 3);
+				GetPaletteEntries(img->Palette, 0, 256, palette);
+
+				for(v = 0; v < height; v++)
+				{
+					throw_if(matrix_pointer_to_row(__img->mat, v, (void **) & ptr));
+					line = (unsigned char *) img->ScanLine[v];
+
+					for(u = 0, u_3 = 0; u < width; u++, u_3 += 3)
+					{
+						color = palette[ line[u] ];
+
+						ptr[u_3] = color.peRed;
+						ptr[u_3 + 1] = color.peGreen;
+						ptr[u_3 + 2] = color.peBlue;
+					}
+				}
+
+				break;
+				}
+			case pf24bit:
+			{
+				__img = image_create(height, width, 3);
+
+				for(v = 0; v < height; v++)
+				{
+					throw_if(matrix_pointer_to_row(__img->mat, v, (void **) & ptr));
+					memcpy(ptr, img->ScanLine[v], width * 3);
+				}
+
+				break;
+			}
+			case pf32bit:
+			{ 
+				__img = image_create(height, width, 3);
+
+				for(v = 0; v < height; v++)
+				{
+					throw_if(matrix_pointer_to_row(__img->mat, v, (void **) & ptr));
+					line = (unsigned char *) img->ScanLine[v];
+
+					for(u = 0, u_3 = 0, u_4 = 0; u < width; u++, u_3 += 3, u_4 += 4)
+						memcpy(ptr + u_3, line + u_4, 3);
+				}
+
+				break;
+			}
+			default:
+			{
+				throw_;
+			}
+		}
 	}
 	catch(...)
 	{
-		if(mtx != NULL)
-			matrix_delete(mtx);
+		if(__img != NULL)
+			image_delete(__img);
 
-		mtx = NULL;
+		__img = NULL;
 	}
 
-	return mtx;
+	return __img;
 }
 
 // ############################################################################ 
@@ -279,12 +346,30 @@ int EXPORT_FUNCTION set_value(const bool is_param, const unsigned ind, const voi
 
 int EXPORT_FUNCTION run()
 {
-	dst = image_create(src->height, src->width, src->ch_num);
+        unsigned v, u;
+        unsigned char * value;
+        const unsigned height = src->height, width = src->width;
+
+	dst = image_create(height, width, 1);
+
+        matrix src_mtx = src->mat, dst_mtx = dst->mat;
+
+        for(v = 0; v < height; v++)
+                for(u = 0; u < width; u++)
+                {
+                        throw_if(matrix_get_value(src_mtx, v, u, 0, & value));
+                        throw_if(matrix_set_value(dst_mtx, v, u, 0, & value));
+                }
 
 	printf("In module: %s\n", in);
 
 	if(out == NULL)
 		out = strdup("Output string");
+
+        Graphics::TBitmap * bmp = matrix_to_TBitmap(dst_mtx);
+        bmp->SaveToFile("result.bmp");
+
+        dst = image_copy(src);
 
 	return 0;
 }
