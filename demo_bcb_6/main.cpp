@@ -346,30 +346,12 @@ int EXPORT_FUNCTION set_value(const bool is_param, const unsigned ind, const voi
 
 int EXPORT_FUNCTION run()
 {
-        unsigned v, u;
-        unsigned char * value;
-        const unsigned height = src->height, width = src->width;
-
-	dst = image_create(height, width, 1);
-
-        matrix src_mtx = src->mat, dst_mtx = dst->mat;
-
-        for(v = 0; v < height; v++)
-                for(u = 0; u < width; u++)
-                {
-                        throw_if(matrix_get_value(src_mtx, v, u, 0, & value));
-                        throw_if(matrix_set_value(dst_mtx, v, u, 0, & value));
-                }
+	dst = image_copy(src);
 
 	printf("In module: %s\n", in);
 
 	if(out == NULL)
 		out = strdup("Output string");
-
-        Graphics::TBitmap * bmp = matrix_to_TBitmap(dst_mtx);
-        bmp->SaveToFile("result.bmp");
-
-        dst = image_copy(src);
 
 	return 0;
 }
