@@ -3,9 +3,9 @@
 <PROJECT>
   <MACROS>
     <VERSION value="BCB.06.00"/>
-    <PROJECT value="../build/libdemo_bcb_6.dll"/>
+    <PROJECT value="../build/libmeaningless_demo_bcb_6.dll"/>
     <OBJFILES value="main.obj"/>
-    <RESFILES value="demo_bcb_6.res"/>
+    <RESFILES value="meaningless_demo_bcb_6.res"/>
     <IDLFILES value=""/>
     <IDLGENFILES value=""/>
     <DEFFILE value=""/>
@@ -29,14 +29,14 @@
     <LINKER value="ilink32"/>
     <USERDEFINES value="_DEBUG"/>
     <SYSDEFINES value="NO_STRICT;_NO_VCL;_RTLDLL;USEPACKAGES"/>
-    <MAINSOURCE value="demo_bcb_6.bpf"/>
-    <INCLUDEPATH value="&quot;C:\Documents and Settings\amv\Рабочий стол\Стенд\super_stend\src\modules\demo_bcb_6&quot;;$(BCB)\include;$(BCB)\include\vcl"/>
-    <LIBPATH value="&quot;C:\Documents and Settings\amv\Рабочий стол\Стенд\super_stend\src\modules\demo_bcb_6&quot;;$(BCB)\lib\obj;$(BCB)\lib"/>
+    <MAINSOURCE value="meaningless_demo_bcb_6.bpf"/>
+    <INCLUDEPATH value="&quot;C:\Documents and Settings\amv\Рабочий стол\Стенд\super_stend\src\modules\meaningless_demo_bcb_6&quot;;$(BCB)\include;$(BCB)\include\vcl"/>
+    <LIBPATH value="&quot;C:\Documents and Settings\amv\Рабочий стол\Стенд\super_stend\src\modules\meaningless_demo_bcb_6&quot;;$(BCB)\lib\obj;$(BCB)\lib"/>
     <WARNINGS value="-w-par"/>
     <OTHERFILES value=""/>
   </MACROS>
   <OPTIONS>
-    <IDLCFLAGS value="-I&quot;C:\Documents and Settings\amv\Рабочий стол\Стенд\super_stend\src\modules\demo_bcb_6&quot; 
+    <IDLCFLAGS value="-I&quot;C:\Documents and Settings\amv\Рабочий стол\Стенд\super_stend\src\modules\meaningless_demo_bcb_6&quot; 
       -I$(BCB)\include -I$(BCB)\include\vcl -src_suffix cpp -D_DEBUG -boa"/>
     <CFLAG1 value="-WD -Od -H=$(BCB)\lib\vcl60.csm -Hc -Vx -Ve -X- -r- -a8 -b- -k -y -v -vi- 
       -tWD -tWM- -c"/>
@@ -53,8 +53,8 @@
     <OTHERFILES value=""/>
   </LINKER>
   <FILELIST>
-      <FILE FILENAME="demo_bcb_6.res" FORMNAME="" UNITNAME="demo_bcb_6.res" CONTAINERID="ResTool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="demo_bcb_6.bpf" FORMNAME="" UNITNAME="demo_bcb_6" CONTAINERID="BPF" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="meaningless_demo_bcb_6.res" FORMNAME="" UNITNAME="meaningless_demo_bcb_6.res" CONTAINERID="ResTool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="meaningless_demo_bcb_6.bpf" FORMNAME="" UNITNAME="meaningless_demo_bcb_6" CONTAINERID="BPF" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="main.cpp" FORMNAME="" UNITNAME="main" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
   </FILELIST>
   <BUILDTOOLS>

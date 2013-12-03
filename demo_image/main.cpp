@@ -5,7 +5,7 @@
 #include <cstring>
 #include <cstdint>
 
-#include "interface.h"
+#include "../interface.h"
 
 using namespace std;
 
@@ -169,20 +169,12 @@ int EXPORT_FUNCTION set_value(const bool is_param, const unsigned ind, const voi
 int EXPORT_FUNCTION run()
 {
 	uint8_t value;
-	int v, u, t;
-	const int height = src->height, width = src->width, ch_num = src->ch_num;
+	unsigned v, u, t;
+	const unsigned height = src->height, width = src->width;
 	
-	dst = image_create(height, width, ch_num);
+	dst = image_copy(src);
 
-	for(v = 0; v < hor_row; v++)
-		for(u = 0; u < width; u++)
-			for(t = 0; t < 3; t++)
-			{
-				matrix_get_value(src->mat, v, u, t, & value);
-				matrix_set_value(dst->mat, v, u, t, & value);
-			}
-
-	for(; v < height; v++)
+	for(v = hor_row; v < height; v++)
 		for(u = 0; u < width; u++)
 			for(t = 0; t < 3; t++)
 			{

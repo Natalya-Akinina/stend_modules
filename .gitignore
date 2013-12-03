@@ -26,3 +26,5 @@ gl_sc
 __pycache__
 *.pyc
 *.obj
+*.~*
+*.trc

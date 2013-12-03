@@ -21,6 +21,8 @@
 
 - image_create();
 - image_delete();
+- image_copy();
+- matrix_to_image();
 - matrix_create();
 - matrix_delete();
 - matrix_copy();
@@ -30,9 +32,10 @@
 - matrix_set_value();
 - matrix_height();
 - matrix_width();
-- matrix_number_of_channel();
+- matrix_number_of_channels();
 - matrix_element_type();
-- matrix_pointer_to_data().
+- matrix_pointer_to_data();
+- matrix_pointer_to_row().
 
 Модуль <B>должен</B> выделять в функции init() и самостоятельно очищать в функции destroy() память под свои возвращаемые значения. Память под свои параметры модуль может самостоятельно выделять, а может и не выделять. В том случае, если модуль не выделяет память под свои параметры, он <B>ни коим образом не должен</B> управлять памятью, выделенной под его параметры.
 
@@ -73,6 +76,9 @@ extern "C"
 	
 	//! \brief Целое, 8-ми битное, беззнаковое (uint8_t)
 	#define UNSIGNED_INT_8_BIT_ELEMENT 0
+
+	//! \brief Целое, 16-ти битное, беззнаковое (uint16_t)
+	#define UNSIGNED_INT_16_BIT_ELEMENT 2
 
 	//! \brief Вещественное двойной точности (double)
 	#define DOUBLE_ELEMENT 1
@@ -133,6 +139,9 @@ extern "C"
 	//! \brief Изображение (image)
 	#define IMAGE_TYPE 5
 
+	//! \brief Указатель на произвольную область памяти (void *)
+	#define VOID_POINTER_TYPE 6
+
 	//@}
 	// ############################################################################ 
 
@@ -143,6 +152,8 @@ extern "C"
 
 	EXPORT_VARIABLE image (* image_create)(const unsigned height, const unsigned width, const unsigned ch_num);
 	EXPORT_VARIABLE int (* image_delete)(const image img);
+	EXPORT_VARIABLE image (* image_copy)(const image img);
+	EXPORT_VARIABLE image (* matrix_to_image)(const matrix mtx);
 
 	// ############################################################################
 	// Служебные функции - матрицы
@@ -156,11 +167,18 @@ extern "C"
 	EXPORT_VARIABLE int (* matrix_set_value)(matrix mtx, const unsigned row, const unsigned column, const unsigned channel, const void * value);
 	EXPORT_VARIABLE int (* matrix_height)(matrix mtx, unsigned * value);
 	EXPORT_VARIABLE int (* matrix_width)(matrix mtx, unsigned * value);
-	EXPORT_VARIABLE int (* matrix_number_of_channel)(matrix mtx, unsigned * value);
+	EXPORT_VARIABLE int (* matrix_number_of_channels)(matrix mtx, unsigned * value);
 	EXPORT_VARIABLE int (* matrix_element_type)(matrix mtx, int * value);
 	EXPORT_VARIABLE int (* matrix_pointer_to_data)(matrix mtx, void ** ptr);
+	EXPORT_VARIABLE int (* matrix_pointer_to_row)(matrix mtx, const unsigned row, void ** ptr);
 
 #else
+
+	//! \cond HIDDEN_SYMBOLS
+
+	#define HIDDEN __attribute__ ((visibility ("hidden")))
+
+	//! \endcond
 
 	// ############################################################################
 	// Служебные функции - изображения
@@ -173,23 +191,51 @@ extern "C"
 	\param width - количество столбцов в изображении;
 	\param ch_num - количество каналов в изображении.
 
-	\return указатель на созданное изображение - в случае успешного создания изображения;
+	\return описатель созданного изображения - в случае успешного создания изображения;
 	\return NULL - в случае, если создать изображение не удалось.
 
 	*/
+	/*! \cond HIDDEN_SYMBOLS */ HIDDEN /*! \endcond */
 	image image_create(const unsigned height, const unsigned width, const unsigned ch_num);
 
 	/*!
 	
 	\brief Удаление изображения
 
-	\param img - указатель на описатель изображения.
+	\param img - описатель изображения.
 
 	\return 0 - в случае успешного завершения операции;
 	\return <> 0 - в случае неудачного завершения операции.
 
 	*/
+	/*! \cond HIDDEN_SYMBOLS */ HIDDEN /*! \endcond */
 	int image_delete(const image img);
+
+	/*!
+	
+	\brief Копирование изображения
+
+	\param img - описатель изображения.
+
+	\return описатель созданного изображения - в случае успешного копирования изображения;
+	\return NULL - в случае, если скопировать изображение не удалось.
+
+	*/
+	/*! \cond HIDDEN_SYMBOLS */ HIDDEN /*! \endcond */
+	image image_copy(const image img);
+
+	/*!
+	
+	\brief Создание описателя изображения по матрице
+
+	\param mtx - описать матрицы.
+
+	\return описатель созданного изображения -в случае успешного создания изображения;
+	\return NULL - в случае, если создать изображение не удалось.
+
+	*/
+	/*! \cond HIDDEN_SYMBOLS */ HIDDEN /*! \endcond */
+	image matrix_to_image(const matrix mtx);
 
 	// ############################################################################
 	// Служебные функции - матрицы
@@ -206,9 +252,10 @@ extern "C"
 	\return описатель созданной матрицы - в случае ее успешного создания;
 	\return NULL - в случае, если матрицу создать не удалось.
 
-	\sa UNSIGNED_INT_8_BIT_ELEMENT, DOUBLE_ELEMENT
+	\sa UNSIGNED_INT_8_BIT_ELEMENT, UNSIGNED_INT_16_BIT_ELEMENT, DOUBLE_ELEMENT
 
 	*/
+	/*! \cond HIDDEN_SYMBOLS */ HIDDEN /*! \endcond */
 	matrix matrix_create(const unsigned height, const unsigned width, const unsigned ch_num, const int element_type);
 
 	/*!
@@ -221,6 +268,7 @@ extern "C"
 	\return NULL - в случае, если матрицу скопировать не удалось.
 
 	*/
+	/*! \cond HIDDEN_SYMBOLS */ HIDDEN /*! \endcond */
 	matrix matrix_copy(matrix mtx);
 
 	/*!
@@ -229,10 +277,11 @@ extern "C"
 
 	\param fname - полный путь и имя файла с изображением.
 
-	\return указатель на созданную матрицу - в случае, если загрузка изображения прошла успешно;
+	\return описатель созданной матрицы - в случае, если загрузка изображения прошла успешно;
 	\return NULL - в случае, если загрузить изображение не удалось.
 
 	*/
+	/*! \cond HIDDEN_SYMBOLS */ HIDDEN /*! \endcond */
 	matrix matrix_load_image(const char * fname);
 
 	/*!
@@ -246,6 +295,7 @@ extern "C"
 	\return <> 0 - в случае неудачного завершения операции.
 
 	*/
+	/*! \cond HIDDEN_SYMBOLS */ HIDDEN /*! \endcond */
 	int matrix_save_image(matrix mtx, const char * fname);
 
 	/*!
@@ -254,7 +304,7 @@ extern "C"
 
 	\param mtx - описатель матрицы;
 	\param row - номер строки;
-	\param column - номер стоблца;
+	\param column - номер столбца;
 	\param channel - номер канала (нумерация от 0);
 	\param value - указатель на переменную, в которой будет сохранено получаемое значение.
 
@@ -266,6 +316,7 @@ extern "C"
 	\return <> 0 - в случае неудачного завершения операции.
 
 	*/
+	/*! \cond HIDDEN_SYMBOLS */ HIDDEN /*! \endcond */
 	int matrix_get_value(matrix mtx, const unsigned row, const unsigned column, const unsigned channel, void * value);
 
 	/*!
@@ -274,7 +325,7 @@ extern "C"
 
 	\param mtx - описатель матрицы;
 	\param row - номер строки;
-	\param column - номер стоблца;
+	\param column - номер столбца;
 	\param channel - номер канала (нумерация от 0);
 	\param value - указатель на переменную, хранящую устанавливаемое значение.
 
@@ -286,6 +337,7 @@ extern "C"
 	\return <> 0 - в случае неудачного завершения операции.
 
 	*/
+	/*! \cond HIDDEN_SYMBOLS */ HIDDEN /*! \endcond */
 	int matrix_set_value(matrix mtx, const unsigned row, const unsigned column, const unsigned channel, const void * value);
 
 	/*!
@@ -299,6 +351,7 @@ extern "C"
 	\return <> 0 - в случае неудачного завершения операции.
 
 	*/
+	/*! \cond HIDDEN_SYMBOLS */ HIDDEN /*! \endcond */
 	int matrix_height(matrix mtx, unsigned * value);
 
 	/*!
@@ -312,6 +365,7 @@ extern "C"
 	\return <> 0 - в случае неудачного завершения операции.
 
 	*/
+	/*! \cond HIDDEN_SYMBOLS */ HIDDEN /*! \endcond */
 	int matrix_width(matrix mtx, unsigned * value);
 
 	/*!
@@ -327,7 +381,8 @@ extern "C"
 	\return <> 0 - в случае неудачного завершения операции.
 
 	*/
-	int matrix_number_of_channel(matrix mtx, unsigned * value);
+	/*! \cond HIDDEN_SYMBOLS */ HIDDEN /*! \endcond */
+	int matrix_number_of_channels(matrix mtx, unsigned * value);
 
 	/*!
 	
@@ -339,9 +394,10 @@ extern "C"
 	\return 0 - в случае успешного завершения операции;
 	\return <> 0 - в случае неудачного завершения операции.
 
-	\sa UNSIGNED_INT_8_BIT_ELEMENT, DOUBLE_ELEMENT
+	\sa UNSIGNED_INT_8_BIT_ELEMENT, UNSIGNED_INT_16_BIT_ELEMENT, DOUBLE_ELEMENT
 
 	*/
+	/*! \cond HIDDEN_SYMBOLS */ HIDDEN /*! \endcond */
 	int matrix_element_type(matrix mtx, int * value);
 
 	/*!
@@ -354,6 +410,7 @@ extern "C"
 	\return <> 0 - в случае неудачного завершения операции.
 
 	*/
+	/*! \cond HIDDEN_SYMBOLS */ HIDDEN /*! \endcond */
 	int matrix_delete(matrix mtx);
 
 	/*!
@@ -367,7 +424,23 @@ extern "C"
 	\return <> 0 - в случае неудачного завершения операции.
 
 	*/
+	/*! \cond HIDDEN_SYMBOLS */ HIDDEN /*! \endcond */
 	int matrix_pointer_to_data(matrix mtx, void ** ptr);
+
+	/*!
+	
+	\brief Получение указателя на область памяти, в которой хранится содержимое строки матрицы
+
+	\param mtx - описатель матрицы;
+	\param row - индекс строки матрицы;
+	\param ptr - указатель на указатель, в котором будет возвращен адрес области памяти, хранящей содержимое строки матрицы.
+
+	\return 0 - в случае успешного завершения операции;
+	\return <> 0 - в случае неудачного завершения операции.
+
+	*/
+	/*! \cond HIDDEN_SYMBOLS */ HIDDEN /*! \endcond */
+	int matrix_pointer_to_row(matrix mtx, const unsigned row, void ** ptr);
 
 #endif
 
